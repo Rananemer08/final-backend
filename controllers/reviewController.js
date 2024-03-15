@@ -46,7 +46,7 @@ const createReview = async (req, res) => {
     const { userId, productId, text } = req.body;
   console.log("dd",req.body)
     // Check if user ID and product ID exist
-    if (!userId || !productId || !text) {
+    if (!userId  || !text) {
       return res.status(400).json({
         success: false,
         message: "User ID, product ID, and text are required",
@@ -66,20 +66,20 @@ const createReview = async (req, res) => {
       });
     }
 
-    const existingProduct = await Product.findById(productId);
-    if (!existingProduct) {
-      return res.status(404).json({
-        success: false,
-        message: "Product not found",
-        status: 404,
-        data: null,
-      });
-    }
+    // const existingProduct = await Product.findById(productId);
+    // if (!existingProduct) {
+    //   return res.status(404).json({
+    //     success: false,
+    //     message: "Product not found",
+    //     status: 404,
+    //     data: null,
+    //   });
+    // }
 
     // Use the correct field names for creating the review
     const review = new Review({
       userId: userId,
-      productId: productId,
+     
       text: text,
     });
 

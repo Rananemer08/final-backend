@@ -173,41 +173,42 @@ const updateOrder = async (req, res) => {
 
 const deleteOrder = async (req, res) => {
   try {
-    const { id } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({
-        success:false,
-        message: "Invalid order ID format",
-        status: 400,
-      });
-    }
-
-    const existingOrder = await Order.findById(id);
-
-    if (!existingOrder) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found",
-        status: 404,
-      });
-    }
-
-    await Order.findByIdAndRemove(id);
-
-    res.status(200).json({
-      success: true,
-      message: "Order deleted successfully",
-      status: 200,
-    });
+     const { id } = req.params;
+ 
+     if (!mongoose.Types.ObjectId.isValid(id)) {
+       return res.status(400).json({
+         success: false,
+         message: "Invalid order ID format",
+         status: 400,
+       });
+     }
+ 
+     const existingOrder = await Order.findById(id);
+ 
+     if (!existingOrder) {
+       return res.status(404).json({
+         success: false,
+         message: "Order not found",
+         status: 404,
+       });
+     }
+ 
+     await Order.findByIdAndDelete(id); // Updated method
+ 
+     res.status(200).json({
+       success: true,
+       message: "Order deleted successfully",
+       status: 200,
+     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to delete the order",
-      error: error.message,
-      status: 500,
-    });
+     res.status(500).json({
+       success: false,
+       message: "Failed to delete the order",
+       error: error.message,
+       status: 500,
+     });
   }
-};
-
-export { createOrder, getAllOrders, getOrderById, updateOrder, deleteOrder };
+ };
+ 
+ export { createOrder, getAllOrders, getOrderById, updateOrder, deleteOrder };
+ 
