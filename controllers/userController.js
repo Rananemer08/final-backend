@@ -275,23 +275,19 @@ export const userLogin = async (req, res) => {
 
     const token = jwt.sign({ user: user.id }, secretKey, { expiresIn: '1h' });
 
-
-    // Set the JWT token in the cookie
-    res.cookie('jwt', token, { httpOnly: true, maxAge: 3600000 });
-
-    // Set the user's role in the cookie
-    res.cookie('userrole', user.role, { httpOnly: false });
-
-    // Set the user's ID in the cookie
-    res.cookie("userId", user.id, { httpOnly: false });
-
-    res.status(200).json({ message: 'Logged in successfully!', user: user.id,token:token });
-console.log("logged in successfully")
+    // Include userType in the response
+    res.status(200).json({ 
+      message: 'Logged in successfully!', 
+      user: user.id, 
+      token: token, 
+      userType: user.userType // Include userType here
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal Server Error', error: error.message });
   }
 };
+
 
 
 const getUserById = async (req, res) => {
