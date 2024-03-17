@@ -41,19 +41,78 @@ import mongoose from "mongoose";
 //   }
 // };
 
+// const createReview = async (req, res) => {
+//   try {
+//     const { userId, productId, text } = req.body;
+//   console.log("dd",req.body)
+//     // Check if user ID and product ID exist
+//     if (!userId  || !text) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "User ID, product ID, and text are required",
+//         status: 400,
+//         data: null,
+//       });
+
+//     }
+
+//     const existingUser = await User.findById(userId);
+//     if (!existingUser) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "User not found",
+//         status: 404,
+//         data: null,
+//       });
+//     }
+
+//     // const existingProduct = await Product.findById(productId);
+//     // if (!existingProduct) {
+//     //   return res.status(404).json({
+//     //     success: false,
+//     //     message: "Product not found",
+//     //     status: 404,
+//     //     data: null,
+//     //   });
+//     // }
+
+//     // Use the correct field names for creating the review
+//     const review = new Review({
+//       userId: userId,
+     
+//       text: text,
+//     });
+
+//     const createdReview = await review.save();
+
+//     res.status(201).json({
+//       success: true,
+//       message: "Review created successfully",
+//       status: 201,
+//       data: createdReview,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Failed to create the review",
+//       status: 500,
+//       data: null,
+//     });
+//   }
+// };
 const createReview = async (req, res) => {
   try {
     const { userId, productId, text } = req.body;
-  console.log("dd",req.body)
-    // Check if user ID and product ID exist
-    if (!userId  || !text) {
+
+    // Check if user ID and review text exist
+    if ( !text) {
       return res.status(400).json({
         success: false,
-        message: "User ID, product ID, and text are required",
+        message: "User ID and review text are required",
         status: 400,
         data: null,
       });
-
     }
 
     const existingUser = await User.findById(userId);
@@ -66,20 +125,8 @@ const createReview = async (req, res) => {
       });
     }
 
-    // const existingProduct = await Product.findById(productId);
-    // if (!existingProduct) {
-    //   return res.status(404).json({
-    //     success: false,
-    //     message: "Product not found",
-    //     status: 404,
-    //     data: null,
-    //   });
-    // }
-
-    // Use the correct field names for creating the review
     const review = new Review({
       userId: userId,
-     
       text: text,
     });
 
@@ -107,23 +154,25 @@ const createReview = async (req, res) => {
 const getAllReviews = async (req, res) => {
   try {
     const reviews = await Review.find({})
-    .populate("userId", "_id username email")
-    .populate("productId", "_id name description price")
-    
+      .populate({
+        path: 'userId',
+        select: 'firstName lastName', // Select only the firstName and lastName fields
+      })
       .sort({ createdAt: -1 })
-      .select("-__v");
-      console.log("Reviews:", reviews);
+      .select('-__v');
+
+    console.log('Reviews:', reviews);
 
     res.status(200).json({
       success: true,
-      message: "Reviews retrieved successfully",
+      message: 'Reviews retrieved successfully',
       status: 200,
       data: reviews,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Failed to retrieve reviews",
+      message: 'Failed to retrieve reviews',
       status: 500,
       data: null,
     });
